@@ -1,0 +1,9 @@
+# History files
+.Rhistory
+
+# Example code
+*-Ex.R
+
+# R data
+.Rdata
+
