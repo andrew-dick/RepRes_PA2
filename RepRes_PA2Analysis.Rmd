@@ -1,7 +1,6 @@
-TODO - Title that briefly summarises the data analysis
+Tornados most damaging weather event in the United states
 ========================================================
-
-> Synopsis which describes and summarizes analysis in < 10 sentences
+> This study examines the population health and economic impacts associated with a range of major storm and weather events within the united states as recorded within the U.S. National Oceanic and Atmospheric Administration's (NOAA) storm database. The findings of this report are that >80% of the mortality and economic consequences can be attributed to 11 event types, and that the #1 cause of deaths, injuries and economic losses in the United States is tornados. 
 
 ## Section 1: Data Processing
 The data for this analysis is created by the U.S. National Oceanic and Atmospheric Administration's (NOAA) storm database. This database tracks characteristics of major storms and weather events in the United States.
@@ -47,11 +46,19 @@ stormdata <- stormdata[grep(pattern="^summary", x=stormdata$event, invert=TRUE),
 # remove all events without economic or population health impacts
 stormdata <- subset(x=stormdata, FATALITIES > 0 | INJURIES > 0 | PROPDMG > 0 | CROPDMG > 0)
 
-# converting property damage using multiples
+# create and convert property damage using multiples
 
 stormdata$propertydamage <- 0
 stormdata[stormdata$PROPDMGEXP == "K",]$propertydamage <- stormdata[stormdata$PROPDMGEXP == "K",]$PROPDMG * 1000
 stormdata[stormdata$PROPDMGEXP == "M",]$propertydamage <- stormdata[stormdata$PROPDMGEXP == "M",]$PROPDMG * 1000000
+
+# create and convert crop damage using multiples
+stormdata$cropdamage <- 0
+stormdata[stormdata$CROPDMGEXP == "K",]$cropdamage <- stormdata[stormdata$CROPDMGEXP == "K",]$CROPDMG * 1000
+stormdata[stormdata$CROPDMGEXP == "M",]$cropdamage <- stormdata[stormdata$CROPDMGEXP == "M",]$CROPDMG * 1000000
+
+# create total damage variable
+stormdata$totaldamage <- stormdata$propertydamage + stormdata$cropdamage
 
 ```
 
@@ -63,9 +70,11 @@ This cleaning procedure took the following steps
 
 3. Removing all event records where no fatalities, injuries, property or crop damage occured: removed `r nrow(rawdata) - nrow(subset(x=rawdata, FATALITIES > 0 | INJURIES > 0 | PROPDMG > 0 | CROPDMG > 0))` records.
 
-4. Converting PROPDMG variable to propertydamage (in USD), multiplying by 1,000 or 1,000,000 where appropriate according to the "K" or "M" values of PROPDMGEXP (other values were set as 0)
+4. Converting PROPDMG and CROPDMG variable to propertydamage and cropdamage (in USD), multiplying by 1,000 or 1,000,000 where appropriate according to the "K" or "M" values of PROPDMGEXP (other values were set as 0)
 
-## Section 2: Results TODO
+5. Creating a totaldamage variable which is the sum of propertydamage and cropdamage
+
+## Section 2: Results
 The NOAA storm database provides information on: (1) the population health impacts as measured by direct fatalities and injuries, and (2) direct or estimated econonomic impacts measured in property damage dollars associated with hydro-meteorological events.
 
 ```{r summarize_data}
@@ -75,7 +84,9 @@ consequences <- ddply(stormdata, c("event"), summarize,
                       deaths = sum(FATALITIES, na.rm=TRUE),
                       injuries = sum(INJURIES, na.rm=TRUE),
                       property_damage = sum(propertydamage, na.rm=TRUE),
-                      crop_damage = sum(CROPDMG, na.rm=TRUE))
+                      crop_damage = sum(CROPDMG, na.rm=TRUE),
+                      total_damage = sum(totaldamage, na.rm=TRUE)
+                      )
 
 ```
 
@@ -95,17 +106,109 @@ death_analysis$deathprop <- 100*death_analysis$deaths/sum(death_analysis$deaths)
 death_analysis <- within(death_analysis, death_sum <- cumsum(deaths))
 # calculate cumulative proportion
 death_analysis <- within(death_analysis, death_prop_sum <- cumsum(deathprop))
+library(xtable)
 ```
+
+Analysis of the proportion of deaths associated with each event type shows that 80% of the fatalities can be attributed to `r nrow(subset(death_analysis, death_prop_sum <= 80))` event types. Table 1 below shows the causes of approximately 80% of fatalities in the NOAA database.
+
+```{r death_table}
+print(xtable(subset(death_analysis,death_prop_sum <=80), type = "html"))
+```
+__Table 1: Meteorological events responsible for >80% of fatalities reported within the NOAA storm database.__
 
 ```{r injuries_analysis}
-#TODO
+# take injury statistics
+injury_analysis <- consequences[with(consequences, order(-injuries)),]
+# remove other columns
+injury_analysis <- injury_analysis[,!names(injury_analysis) %in% c("deaths","property_damage","crop_damage")]
+# remove 0 values
+injury_analysis <- subset(x=injury_analysis, injuries > 0)
+# calculate percentage (presentation form)
+injury_analysis$injuryprop <- 100*injury_analysis$injuries/sum(injury_analysis$injuries)
+# calculate cumulative sum
+injury_analysis <- within(injury_analysis, injury_sum <- cumsum(injuries))
+# calculate cumulative proportion
+injury_analysis <- within(injury_analysis, injury_prop_sum <- cumsum(injuryprop))
 ```
 
-### 2.2: 
-TODO - Identify which types of events have the greatest economic consequences
+Analysis of the proportion of injuries associated with each event type shows that 80% of the fatalities can be attributed to `r nrow(subset(injury_analysis, injury_prop_sum <= 80))` event types. Interestingly, these values are even more concentrated than for fatalities Table 2 below shows the causes of approximately 80% of fatalities in the NOAA database.
 
-TODO - Figure 1
-TODO - Figure 2
-TODO - Figure 3
+```{r injury_table}
+print(xtable(subset(injury_analysis, injury_prop_sum <=80), type = "html"))
+```
+__Table 2: Meteorological events responsible for >80% of injuries reported within the NOAA storm database.__
 
-TODO - link to github
+### 2.2: Economic impacts of storm events
+```{r}
+printMoney <- function(x){
+    format(x, nsmall = 2, decimal.mark=".", big.mark=",")
+}
+```
+The NOAA database records $`r printMoney(sum(consequences$property_damage)/1000000)
+`M in property damage, $`r printMoney(sum(consequences$crop_damage)/1000000)
+`M crop damage, or $`r printMoney(sum(consequences$total_damage)/1000000)
+`M associated with hydro-meteorological events.
+
+```{r economic_analysis}
+# take economic cost
+economic_cost <- consequences[with(consequences, order(-total_damage)),]
+
+# remove other columns
+economic_cost <- economic_cost[,!names(economic_cost) %in% c("deaths","injuries")]
+
+# remove 0 values
+economic_cost <- subset(x=economic_cost, total_damage > 0)
+
+# calculate percentage (presentation form)
+economic_cost$costprop <- 100*economic_cost$total_damage/sum(economic_cost$total_damage)
+
+# calculate cumulative sum
+economic_cost <- within(economic_cost, cost_sum <- cumsum(total_damage))
+
+# calculate cumulative proportion
+economic_cost <- within(economic_cost, cost_prop_sum <- cumsum(costprop))
+
+```
+
+Analysis of the proportion of economic loss associated with each event type shows that 80% of the economic loss can be attributed to `r nrow(subset(economic_cost, cost_prop_sum <= 80))` event types. Table 3 below shows the causes of approximately 80% of fatalities in the NOAA database.
+
+```{r cost_table}
+print(xtable(subset(economic_cost,cost_prop_sum <=80), type = "html"))
+```
+__Table 2: Meteorological events responsible for >80% of economic losses calculated as a sum of property and cropping losses reported within the NOAA storm database.__
+
+### 2.3: Summary
+
+```{r summary}
+
+top_death <- subset(death_analysis,death_prop_sum <=80)$event
+top_econ <- subset(economic_cost,cost_prop_sum <=80)$event
+top_events <- consequences[consequences$event %in% union(top_death, top_econ),]
+top_events <- top_events[,!names(top_events) %in% c("injuries","property_damage","crop_damage")]
+
+```
+
+A subset of `r nrow(top_events)` meteorological events (Figure 1 below) correspond to 80% of the fatalities and economic losses reported within the NOAA storm database.
+
+__Figure 1: Summary plot of the meteorological events with the greatest recorded mortality and economic consequence__
+```{r summary_chart}
+par(mfrow=c(2,1))
+par(mar=c(8,5,1,5))
+par(cex=0.8)
+barplot(height=top_events$total_damage, names.arg=top_events$event, las=3, ylab="Damage (USD)")
+barplot(height=top_events$deaths, names.arg=top_events$event, las=3, ylab="Fatalities")
+mtext("Damage and Fatalities recorded against top 11 meteorological events")
+
+```
+
+### Section 3: Conclusion
+This analysis shows that a small number of key event types as indicated in Table 3 below are responsible for >80% of the mortality and economic losses reported within the NOAA storm database.
+
+```{r top_event_table}
+print(xtable(top_events, type = "html"))
+```
+__Table 3: Meteorological events responsible for >80% of economic losses calculated as a sum of property and cropping losses reported within the NOAA storm database.__
+
+It can also be seen that tornados are the most damaging weather event, accounting for `r economic_cost[economic_cost$event == "tornado",]$costprop`% of economic impact, `r death_analysis[death_analysis$event == "tornado",]$deathprop`% of deaths, and `r injury_analysis[injury_analysis$event == "tornado",]$injuryprop`% of injuries/
+
+As such, these are the events that any municipal manager should be considering first, dependent upon the particular meteorological and geographic circumstances of the municipality.
