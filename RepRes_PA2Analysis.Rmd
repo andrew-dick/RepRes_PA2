@@ -197,7 +197,6 @@ par(mar=c(8,5,1,5))
 par(cex=0.8)
 barplot(height=top_events$total_damage, names.arg=top_events$event, las=3, ylab="Damage (USD)")
 barplot(height=top_events$deaths, names.arg=top_events$event, las=3, ylab="Fatalities")
-mtext("Damage and Fatalities recorded against top 11 meteorological events")
 
 ```
 
