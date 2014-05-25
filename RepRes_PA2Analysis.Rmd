@@ -109,7 +109,7 @@ library(xtable)
 Analysis of the proportion of deaths associated with each event type shows that 80% of the fatalities can be attributed to `r nrow(subset(death_analysis, death_prop_sum <= 80))` event types. Table 1 below shows the causes of approximately 80% of fatalities in the NOAA database.
 
 ```{r death_table, results='asis'}
-print(xtable(subset(death_analysis,death_prop_sum <=80), type = "html"))
+print(xtable(subset(death_analysis,death_prop_sum <=80)), type = "html", include.rownames=FALSE)
 ```
 __Table 1: Meteorological events responsible for >80% of fatalities reported within the NOAA storm database.__
 
@@ -131,7 +131,7 @@ injury_analysis <- within(injury_analysis, injury_prop_sum <- cumsum(injuryprop)
 Analysis of the proportion of injuries associated with each event type shows that 80% of the fatalities can be attributed to `r nrow(subset(injury_analysis, injury_prop_sum <= 80))` event types. Interestingly, these values are even more concentrated than for fatalities Table 2 below shows the causes of approximately 80% of fatalities in the NOAA database.
 
 ```{r injury_table, results='asis'}
-print(xtable(subset(injury_analysis, injury_prop_sum <=80), type = "html"))
+print(xtable(subset(injury_analysis, injury_prop_sum <=80)), type = "html", include.rownames=FALSE)
 ```
 __Table 2: Meteorological events responsible for >80% of injuries reported within the NOAA storm database.__
 
@@ -170,9 +170,9 @@ economic_cost <- within(economic_cost, cost_prop_sum <- cumsum(costprop))
 Analysis of the proportion of economic loss associated with each event type shows that 80% of the economic loss can be attributed to `r nrow(subset(economic_cost, cost_prop_sum <= 80))` event types. Table 3 below shows the causes of approximately 80% of fatalities in the NOAA database.
 
 ```{r cost_table, results='asis'}
-print(xtable(subset(economic_cost,cost_prop_sum <=80), type = "html"))
+print(xtable(subset(economic_cost,cost_prop_sum <=80)), type = "html", include.rownames=FALSE)
 ```
-__Table 2: Meteorological events responsible for >80% of economic losses calculated as a sum of property and cropping losses reported within the NOAA storm database.__
+__Table 3: Meteorological events responsible for >80% of economic losses calculated as a sum of property and cropping losses reported within the NOAA storm database.__
 
 ### 2.3: Summary
 
@@ -198,13 +198,13 @@ barplot(height=top_events$deaths, names.arg=top_events$event, las=3, ylab="Fatal
 ```
 
 ### Section 3: Conclusion
-This analysis shows that a small number of key event types as indicated in Table 3 below are responsible for >80% of the mortality and economic losses reported within the NOAA storm database.
+This analysis shows that a small number of key event types as indicated in Table 4 below are responsible for >80% of the mortality and economic losses reported within the NOAA storm database.
 
 ```{r top_event_table, results='asis'}
-print(xtable(top_events, type = "html"))
+print(xtable(top_events), type = "html", include.rownames=FALSE)
 ```
-__Table 3: Meteorological events responsible for >80% of economic losses calculated as a sum of property and cropping losses reported within the NOAA storm database.__
+__Table 4: Meteorological events responsible for >80% of economic losses calculated as a sum of property and cropping losses reported within the NOAA storm database.__
 
-It can also be seen that tornados are the most damaging weather event, accounting for `r economic_cost[economic_cost$event == "tornado",]$costprop`% of economic impact, `r death_analysis[death_analysis$event == "tornado",]$deathprop`% of deaths, and `r injury_analysis[injury_analysis$event == "tornado",]$injuryprop`% of injuries/
+It can also be seen that tornados are the most damaging weather event, accounting for `r economic_cost[economic_cost$event == "tornado",]$costprop`% of economic impact, `r death_analysis[death_analysis$event == "tornado",]$deathprop`% of deaths, and `r injury_analysis[injury_analysis$event == "tornado",]$injuryprop`% of injuries.
 
 As such, these are the events that any municipal manager should be considering first, dependent upon the particular meteorological and geographic circumstances of the municipality.

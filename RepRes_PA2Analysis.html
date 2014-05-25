@@ -196,16 +196,8 @@ dataURL &lt;- &quot;https://d396qusza40orc.cloudfront.net/repdata%2Fdata%2FStorm
 if (!file.exists(&quot;../PA2_rawdata/repdata-data-StormData.csv.bz2&quot;)) {
     download.file(url = dataURL, destfile = &quot;../PA2_rawdata/repdata-data-StormData.csv.bz2&quot;, 
         method = &quot;curl&quot;)
-    print(&quot;File downloaded&quot;)
-} else {
-    print(&quot;File was already downloaded&quot;)
 }
-</code></pre>
 
-<pre><code>## [1] &quot;File was already downloaded&quot;
-</code></pre>
-
-<pre><code class="r">
 # load raw data - if needed
 if (!exists(&quot;rawdata&quot;)) {
     rawdata &lt;- read.csv(&quot;../PA2_rawdata//repdata-data-StormData.csv.bz2&quot;)
@@ -297,31 +289,26 @@ library(xtable)
 
 <p>Analysis of the proportion of deaths associated with each event type shows that 80% of the fatalities can be attributed to 10 event types. Table 1 below shows the causes of approximately 80% of fatalities in the NOAA database.</p>
 
-<pre><code class="r">print(xtable(subset(death_analysis, death_prop_sum &lt;= 80), type = &quot;html&quot;))
+<pre><code class="r">print(xtable(subset(death_analysis, death_prop_sum &lt;= 80)), type = &quot;html&quot;, include.rownames = FALSE)
 </code></pre>
 
-<pre><code>## % latex table generated in R 3.0.2 by xtable 1.7-3 package
-## % Sun May 25 20:13:24 2014
-## \begin{table}[ht]
-## \centering
-## \begin{tabular}{rlrrrrr}
-##   \hline
-##  &amp; event &amp; deaths &amp; total\_damage &amp; deathprop &amp; death\_sum &amp; death\_prop\_sum \\ 
-##   \hline
-## 371 &amp; tornado &amp; 5633.00 &amp; 52040613590.00 &amp; 37.19 &amp; 5633.00 &amp; 37.19 \\ 
-##   54 &amp; excessive heat &amp; 1903.00 &amp; 500155700.00 &amp; 12.57 &amp; 7536.00 &amp; 49.76 \\ 
-##   65 &amp; flash flood &amp; 978.00 &amp; 16562128610.00 &amp; 6.46 &amp; 8514.00 &amp; 56.22 \\ 
-##   133 &amp; heat &amp; 937.00 &amp; 3258500.00 &amp; 6.19 &amp; 9451.00 &amp; 62.40 \\ 
-##   233 &amp; lightning &amp; 816.00 &amp; 940751370.00 &amp; 5.39 &amp; 10267.00 &amp; 67.79 \\ 
-##   386 &amp; tstm wind &amp; 504.00 &amp; 5038965790.00 &amp; 3.33 &amp; 10771.00 &amp; 71.12 \\ 
-##   78 &amp; flood &amp; 470.00 &amp; 27819678250.00 &amp; 3.10 &amp; 11241.00 &amp; 74.22 \\ 
-##   276 &amp; rip current &amp; 368.00 &amp; 1000.00 &amp; 2.43 &amp; 11609.00 &amp; 76.65 \\ 
-##   179 &amp; high wind &amp; 248.00 &amp; 4608617560.00 &amp; 1.64 &amp; 11857.00 &amp; 78.29 \\ 
-##   11 &amp; avalanche &amp; 224.00 &amp; 3721800.00 &amp; 1.48 &amp; 12081.00 &amp; 79.77 \\ 
-##    \hline
-## \end{tabular}
-## \end{table}
-</code></pre>
+<!-- html table generated in R 3.0.2 by xtable 1.7-3 package -->
+
+<!-- Sun May 25 20:38:37 2014 -->
+
+<TABLE border=1>
+<TR> <TH> event </TH> <TH> deaths </TH> <TH> total_damage </TH> <TH> deathprop </TH> <TH> death_sum </TH> <TH> death_prop_sum </TH>  </TR>
+  <TR> <TD> tornado </TD> <TD align="right"> 5633.00 </TD> <TD align="right"> 52040613590.00 </TD> <TD align="right"> 37.19 </TD> <TD align="right"> 5633.00 </TD> <TD align="right"> 37.19 </TD> </TR>
+  <TR> <TD> excessive heat </TD> <TD align="right"> 1903.00 </TD> <TD align="right"> 500155700.00 </TD> <TD align="right"> 12.57 </TD> <TD align="right"> 7536.00 </TD> <TD align="right"> 49.76 </TD> </TR>
+  <TR> <TD> flash flood </TD> <TD align="right"> 978.00 </TD> <TD align="right"> 16562128610.00 </TD> <TD align="right"> 6.46 </TD> <TD align="right"> 8514.00 </TD> <TD align="right"> 56.22 </TD> </TR>
+  <TR> <TD> heat </TD> <TD align="right"> 937.00 </TD> <TD align="right"> 3258500.00 </TD> <TD align="right"> 6.19 </TD> <TD align="right"> 9451.00 </TD> <TD align="right"> 62.40 </TD> </TR>
+  <TR> <TD> lightning </TD> <TD align="right"> 816.00 </TD> <TD align="right"> 940751370.00 </TD> <TD align="right"> 5.39 </TD> <TD align="right"> 10267.00 </TD> <TD align="right"> 67.79 </TD> </TR>
+  <TR> <TD> tstm wind </TD> <TD align="right"> 504.00 </TD> <TD align="right"> 5038965790.00 </TD> <TD align="right"> 3.33 </TD> <TD align="right"> 10771.00 </TD> <TD align="right"> 71.12 </TD> </TR>
+  <TR> <TD> flood </TD> <TD align="right"> 470.00 </TD> <TD align="right"> 27819678250.00 </TD> <TD align="right"> 3.10 </TD> <TD align="right"> 11241.00 </TD> <TD align="right"> 74.22 </TD> </TR>
+  <TR> <TD> rip current </TD> <TD align="right"> 368.00 </TD> <TD align="right"> 1000.00 </TD> <TD align="right"> 2.43 </TD> <TD align="right"> 11609.00 </TD> <TD align="right"> 76.65 </TD> </TR>
+  <TR> <TD> high wind </TD> <TD align="right"> 248.00 </TD> <TD align="right"> 4608617560.00 </TD> <TD align="right"> 1.64 </TD> <TD align="right"> 11857.00 </TD> <TD align="right"> 78.29 </TD> </TR>
+  <TR> <TD> avalanche </TD> <TD align="right"> 224.00 </TD> <TD align="right"> 3721800.00 </TD> <TD align="right"> 1.48 </TD> <TD align="right"> 12081.00 </TD> <TD align="right"> 79.77 </TD> </TR>
+   </TABLE>
 
 <p><strong>Table 1: Meteorological events responsible for &gt;80% of fatalities reported within the NOAA storm database.</strong></p>
 
@@ -342,25 +329,21 @@ injury_analysis &lt;- within(injury_analysis, injury_prop_sum &lt;- cumsum(injur
 
 <p>Analysis of the proportion of injuries associated with each event type shows that 80% of the fatalities can be attributed to 4 event types. Interestingly, these values are even more concentrated than for fatalities Table 2 below shows the causes of approximately 80% of fatalities in the NOAA database.</p>
 
-<pre><code class="r">print(xtable(subset(injury_analysis, injury_prop_sum &lt;= 80), type = &quot;html&quot;))
+<pre><code class="r">print(xtable(subset(injury_analysis, injury_prop_sum &lt;= 80)), type = &quot;html&quot;, 
+    include.rownames = FALSE)
 </code></pre>
 
-<pre><code>## % latex table generated in R 3.0.2 by xtable 1.7-3 package
-## % Sun May 25 20:13:24 2014
-## \begin{table}[ht]
-## \centering
-## \begin{tabular}{rlrrrrr}
-##   \hline
-##  &amp; event &amp; injuries &amp; total\_damage &amp; injuryprop &amp; injury\_sum &amp; injury\_prop\_sum \\ 
-##   \hline
-## 371 &amp; tornado &amp; 91346.00 &amp; 52040613590.00 &amp; 65.00 &amp; 91346.00 &amp; 65.00 \\ 
-##   386 &amp; tstm wind &amp; 6957.00 &amp; 5038965790.00 &amp; 4.95 &amp; 98303.00 &amp; 69.95 \\ 
-##   78 &amp; flood &amp; 6789.00 &amp; 27819678250.00 &amp; 4.83 &amp; 105092.00 &amp; 74.78 \\ 
-##   54 &amp; excessive heat &amp; 6525.00 &amp; 500155700.00 &amp; 4.64 &amp; 111617.00 &amp; 79.43 \\ 
-##    \hline
-## \end{tabular}
-## \end{table}
-</code></pre>
+<!-- html table generated in R 3.0.2 by xtable 1.7-3 package -->
+
+<!-- Sun May 25 20:38:37 2014 -->
+
+<TABLE border=1>
+<TR> <TH> event </TH> <TH> injuries </TH> <TH> total_damage </TH> <TH> injuryprop </TH> <TH> injury_sum </TH> <TH> injury_prop_sum </TH>  </TR>
+  <TR> <TD> tornado </TD> <TD align="right"> 91346.00 </TD> <TD align="right"> 52040613590.00 </TD> <TD align="right"> 65.00 </TD> <TD align="right"> 91346.00 </TD> <TD align="right"> 65.00 </TD> </TR>
+  <TR> <TD> tstm wind </TD> <TD align="right"> 6957.00 </TD> <TD align="right"> 5038965790.00 </TD> <TD align="right"> 4.95 </TD> <TD align="right"> 98303.00 </TD> <TD align="right"> 69.95 </TD> </TR>
+  <TR> <TD> flood </TD> <TD align="right"> 6789.00 </TD> <TD align="right"> 27819678250.00 </TD> <TD align="right"> 4.83 </TD> <TD align="right"> 105092.00 </TD> <TD align="right"> 74.78 </TD> </TR>
+  <TR> <TD> excessive heat </TD> <TD align="right"> 6525.00 </TD> <TD align="right"> 500155700.00 </TD> <TD align="right"> 4.64 </TD> <TD align="right"> 111617.00 </TD> <TD align="right"> 79.43 </TD> </TR>
+   </TABLE>
 
 <p><strong>Table 2: Meteorological events responsible for &gt;80% of injuries reported within the NOAA storm database.</strong></p>
 
@@ -394,31 +377,26 @@ economic_cost &lt;- within(economic_cost, cost_prop_sum &lt;- cumsum(costprop))
 
 <p>Analysis of the proportion of economic loss associated with each event type shows that 80% of the economic loss can be attributed to 8 event types. Table 3 below shows the causes of approximately 80% of fatalities in the NOAA database.</p>
 
-<pre><code class="r">print(xtable(subset(economic_cost, cost_prop_sum &lt;= 80), type = &quot;html&quot;))
+<pre><code class="r">print(xtable(subset(economic_cost, cost_prop_sum &lt;= 80)), type = &quot;html&quot;, include.rownames = FALSE)
 </code></pre>
 
-<pre><code>## % latex table generated in R 3.0.2 by xtable 1.7-3 package
-## % Sun May 25 20:13:24 2014
-## \begin{table}[ht]
-## \centering
-## \begin{tabular}{rlrrrrrr}
-##   \hline
-##  &amp; event &amp; property\_damage &amp; crop\_damage &amp; total\_damage &amp; costprop &amp; cost\_sum &amp; cost\_prop\_sum \\ 
-##   \hline
-## 371 &amp; tornado &amp; 51625660480.00 &amp; 100018.52 &amp; 52040613590.00 &amp; 27.84 &amp; 52040613590.00 &amp; 27.84 \\ 
-##   78 &amp; flood &amp; 22157709800.00 &amp; 168037.88 &amp; 27819678250.00 &amp; 14.88 &amp; 79860291840.00 &amp; 42.73 \\ 
-##   116 &amp; hail &amp; 13927366720.00 &amp; 579596.28 &amp; 16952904170.00 &amp; 9.07 &amp; 96813196010.00 &amp; 51.80 \\ 
-##   65 &amp; flash flood &amp; 15140811510.00 &amp; 179200.46 &amp; 16562128610.00 &amp; 8.86 &amp; 113375324620.00 &amp; 60.66 \\ 
-##   43 &amp; drought &amp; 1046106000.00 &amp; 33898.62 &amp; 13518672000.00 &amp; 7.23 &amp; 126893996620.00 &amp; 67.89 \\ 
-##   194 &amp; hurricane &amp; 6168319010.00 &amp; 5339.31 &amp; 8910229010.00 &amp; 4.77 &amp; 135804225630.00 &amp; 72.66 \\ 
-##   386 &amp; tstm wind &amp; 4484958440.00 &amp; 109202.60 &amp; 5038965790.00 &amp; 2.70 &amp; 140843191420.00 &amp; 75.35 \\ 
-##   203 &amp; hurricane/typhoon &amp; 3805840000.00 &amp; 4798.48 &amp; 4903712800.00 &amp; 2.62 &amp; 145746904220.00 &amp; 77.98 \\ 
-##    \hline
-## \end{tabular}
-## \end{table}
-</code></pre>
+<!-- html table generated in R 3.0.2 by xtable 1.7-3 package -->
 
-<p><strong>Table 2: Meteorological events responsible for &gt;80% of economic losses calculated as a sum of property and cropping losses reported within the NOAA storm database.</strong></p>
+<!-- Sun May 25 20:38:37 2014 -->
+
+<TABLE border=1>
+<TR> <TH> event </TH> <TH> property_damage </TH> <TH> crop_damage </TH> <TH> total_damage </TH> <TH> costprop </TH> <TH> cost_sum </TH> <TH> cost_prop_sum </TH>  </TR>
+  <TR> <TD> tornado </TD> <TD align="right"> 51625660480.00 </TD> <TD align="right"> 100018.52 </TD> <TD align="right"> 52040613590.00 </TD> <TD align="right"> 27.84 </TD> <TD align="right"> 52040613590.00 </TD> <TD align="right"> 27.84 </TD> </TR>
+  <TR> <TD> flood </TD> <TD align="right"> 22157709800.00 </TD> <TD align="right"> 168037.88 </TD> <TD align="right"> 27819678250.00 </TD> <TD align="right"> 14.88 </TD> <TD align="right"> 79860291840.00 </TD> <TD align="right"> 42.73 </TD> </TR>
+  <TR> <TD> hail </TD> <TD align="right"> 13927366720.00 </TD> <TD align="right"> 579596.28 </TD> <TD align="right"> 16952904170.00 </TD> <TD align="right"> 9.07 </TD> <TD align="right"> 96813196010.00 </TD> <TD align="right"> 51.80 </TD> </TR>
+  <TR> <TD> flash flood </TD> <TD align="right"> 15140811510.00 </TD> <TD align="right"> 179200.46 </TD> <TD align="right"> 16562128610.00 </TD> <TD align="right"> 8.86 </TD> <TD align="right"> 113375324620.00 </TD> <TD align="right"> 60.66 </TD> </TR>
+  <TR> <TD> drought </TD> <TD align="right"> 1046106000.00 </TD> <TD align="right"> 33898.62 </TD> <TD align="right"> 13518672000.00 </TD> <TD align="right"> 7.23 </TD> <TD align="right"> 126893996620.00 </TD> <TD align="right"> 67.89 </TD> </TR>
+  <TR> <TD> hurricane </TD> <TD align="right"> 6168319010.00 </TD> <TD align="right"> 5339.31 </TD> <TD align="right"> 8910229010.00 </TD> <TD align="right"> 4.77 </TD> <TD align="right"> 135804225630.00 </TD> <TD align="right"> 72.66 </TD> </TR>
+  <TR> <TD> tstm wind </TD> <TD align="right"> 4484958440.00 </TD> <TD align="right"> 109202.60 </TD> <TD align="right"> 5038965790.00 </TD> <TD align="right"> 2.70 </TD> <TD align="right"> 140843191420.00 </TD> <TD align="right"> 75.35 </TD> </TR>
+  <TR> <TD> hurricane/typhoon </TD> <TD align="right"> 3805840000.00 </TD> <TD align="right"> 4798.48 </TD> <TD align="right"> 4903712800.00 </TD> <TD align="right"> 2.62 </TD> <TD align="right"> 145746904220.00 </TD> <TD align="right"> 77.98 </TD> </TR>
+   </TABLE>
+
+<p><strong>Table 3: Meteorological events responsible for &gt;80% of economic losses calculated as a sum of property and cropping losses reported within the NOAA storm database.</strong></p>
 
 <h3>2.3: Summary</h3>
 
@@ -447,41 +425,36 @@ barplot(height = top_events$deaths, names.arg = top_events$event, las = 3, ylab 
 
 <h3>Section 3: Conclusion</h3>
 
-<p>This analysis shows that a small number of key event types as indicated in Table 3 below are responsible for &gt;80% of the mortality and economic losses reported within the NOAA storm database.</p>
+<p>This analysis shows that a small number of key event types as indicated in Table 4 below are responsible for &gt;80% of the mortality and economic losses reported within the NOAA storm database.</p>
 
-<pre><code class="r">print(xtable(top_events, type = &quot;html&quot;))
+<pre><code class="r">print(xtable(top_events), type = &quot;html&quot;, include.rownames = FALSE)
 </code></pre>
 
-<pre><code>## % latex table generated in R 3.0.2 by xtable 1.7-3 package
-## % Sun May 25 20:13:25 2014
-## \begin{table}[ht]
-## \centering
-## \begin{tabular}{rlrr}
-##   \hline
-##  &amp; event &amp; deaths &amp; total\_damage \\ 
-##   \hline
-## 11 &amp; avalanche &amp; 224.00 &amp; 3721800.00 \\ 
-##   43 &amp; drought &amp; 0.00 &amp; 13518672000.00 \\ 
-##   54 &amp; excessive heat &amp; 1903.00 &amp; 500155700.00 \\ 
-##   65 &amp; flash flood &amp; 978.00 &amp; 16562128610.00 \\ 
-##   78 &amp; flood &amp; 470.00 &amp; 27819678250.00 \\ 
-##   116 &amp; hail &amp; 15.00 &amp; 16952904170.00 \\ 
-##   133 &amp; heat &amp; 937.00 &amp; 3258500.00 \\ 
-##   179 &amp; high wind &amp; 248.00 &amp; 4608617560.00 \\ 
-##   194 &amp; hurricane &amp; 61.00 &amp; 8910229010.00 \\ 
-##   203 &amp; hurricane/typhoon &amp; 64.00 &amp; 4903712800.00 \\ 
-##   233 &amp; lightning &amp; 816.00 &amp; 940751370.00 \\ 
-##   276 &amp; rip current &amp; 368.00 &amp; 1000.00 \\ 
-##   371 &amp; tornado &amp; 5633.00 &amp; 52040613590.00 \\ 
-##   386 &amp; tstm wind &amp; 504.00 &amp; 5038965790.00 \\ 
-##    \hline
-## \end{tabular}
-## \end{table}
-</code></pre>
+<!-- html table generated in R 3.0.2 by xtable 1.7-3 package -->
 
-<p><strong>Table 3: Meteorological events responsible for &gt;80% of economic losses calculated as a sum of property and cropping losses reported within the NOAA storm database.</strong></p>
+<!-- Sun May 25 20:38:37 2014 -->
 
-<p>It can also be seen that tornados are the most damaging weather event, accounting for 27.8421% of economic impact, 37.1938% of deaths, and 65.002% of injuries/</p>
+<TABLE border=1>
+<TR> <TH> event </TH> <TH> deaths </TH> <TH> total_damage </TH>  </TR>
+  <TR> <TD> avalanche </TD> <TD align="right"> 224.00 </TD> <TD align="right"> 3721800.00 </TD> </TR>
+  <TR> <TD> drought </TD> <TD align="right"> 0.00 </TD> <TD align="right"> 13518672000.00 </TD> </TR>
+  <TR> <TD> excessive heat </TD> <TD align="right"> 1903.00 </TD> <TD align="right"> 500155700.00 </TD> </TR>
+  <TR> <TD> flash flood </TD> <TD align="right"> 978.00 </TD> <TD align="right"> 16562128610.00 </TD> </TR>
+  <TR> <TD> flood </TD> <TD align="right"> 470.00 </TD> <TD align="right"> 27819678250.00 </TD> </TR>
+  <TR> <TD> hail </TD> <TD align="right"> 15.00 </TD> <TD align="right"> 16952904170.00 </TD> </TR>
+  <TR> <TD> heat </TD> <TD align="right"> 937.00 </TD> <TD align="right"> 3258500.00 </TD> </TR>
+  <TR> <TD> high wind </TD> <TD align="right"> 248.00 </TD> <TD align="right"> 4608617560.00 </TD> </TR>
+  <TR> <TD> hurricane </TD> <TD align="right"> 61.00 </TD> <TD align="right"> 8910229010.00 </TD> </TR>
+  <TR> <TD> hurricane/typhoon </TD> <TD align="right"> 64.00 </TD> <TD align="right"> 4903712800.00 </TD> </TR>
+  <TR> <TD> lightning </TD> <TD align="right"> 816.00 </TD> <TD align="right"> 940751370.00 </TD> </TR>
+  <TR> <TD> rip current </TD> <TD align="right"> 368.00 </TD> <TD align="right"> 1000.00 </TD> </TR>
+  <TR> <TD> tornado </TD> <TD align="right"> 5633.00 </TD> <TD align="right"> 52040613590.00 </TD> </TR>
+  <TR> <TD> tstm wind </TD> <TD align="right"> 504.00 </TD> <TD align="right"> 5038965790.00 </TD> </TR>
+   </TABLE>
+
+<p><strong>Table 4: Meteorological events responsible for &gt;80% of economic losses calculated as a sum of property and cropping losses reported within the NOAA storm database.</strong></p>
+
+<p>It can also be seen that tornados are the most damaging weather event, accounting for 27.8421% of economic impact, 37.1938% of deaths, and 65.002% of injuries.</p>
 
 <p>As such, these are the events that any municipal manager should be considering first, dependent upon the particular meteorological and geographic circumstances of the municipality.</p>
 
