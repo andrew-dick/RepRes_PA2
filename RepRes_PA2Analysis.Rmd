@@ -3,16 +3,105 @@ TODO - Title that briefly summarises the data analysis
 
 > Synopsis which describes and summarizes analysis in < 10 sentences
 
-## Section 1: Data Processing TODO
+## Section 1: Data Processing
+The data for this analysis is created by the U.S. National Oceanic and Atmospheric Administration's (NOAA) storm database. This database tracks characteristics of major storms and weather events in the United States.
 
-TODO - Description of how data is loaded
-TODO - Code for loading data
-TODO - Data Preparation explanation and loading
+This database is made available as part of the Coursera course Reproduceable research and was downloaded on 24 May 2014 ([link](https://d396qusza40orc.cloudfront.net/repdata%2Fdata%2FStormData.csv.bz2)) and loaded using the following code.
+
+```{r data_download}
+# download data - if needed
+dataURL <- "https://d396qusza40orc.cloudfront.net/repdata%2Fdata%2FStormData.csv.bz2"
+if(!file.exists("../PA2_rawdata/repdata-data-StormData.csv.bz2")){
+    download.file(url = dataURL, destfile = "../PA2_rawdata/repdata-data-StormData.csv.bz2", method = "curl")
+    print("File downloaded")
+} else {
+    print("File was already downloaded")
+}
+
+# load raw data - if needed
+if(!exists("rawdata")){
+    rawdata <- read.csv("../PA2_rawdata//repdata-data-StormData.csv.bz2")
+}
+
+```
+
+This database provides `r nrow(rawdata)` event logs, each with an event classification code (in the original dataset as "EVDATA"). For the purpose of this analysis a simple cleaning procedure was followed.
+
+
+```{r clean_events}
+# duplicate dataset
+stormdata <- rawdata
+
+# create a modified events column (event)
+stormdata$event <- rawdata$EVTYPE
+
+# lowercase all
+stormdata$event <- tolower(stormdata$event)
+
+# convert to factor
+stormdata$event <- as.factor(stormdata$event)
+
+# remove all event summary events
+stormdata <- stormdata[grep(pattern="^summary", x=stormdata$event, invert=TRUE),]
+
+# remove all events without economic or population health impacts
+stormdata <- subset(x=stormdata, FATALITIES > 0 | INJURIES > 0 | PROPDMG > 0 | CROPDMG > 0)
+
+# converting property damage using multiples
+
+stormdata$propertydamage <- 0
+stormdata[stormdata$PROPDMGEXP == "K",]$propertydamage <- stormdata[stormdata$PROPDMGEXP == "K",]$PROPDMG * 1000
+stormdata[stormdata$PROPDMGEXP == "M",]$propertydamage <- stormdata[stormdata$PROPDMGEXP == "M",]$PROPDMG * 1000000
+
+```
+
+This cleaning procedure took the following steps
+
+1. Converting all event type descriptions to lower case: reduce `r length(unique(stormdata$EVTYPE))` event types to `r length(unique(stormdata$event))` event types.
+
+2. Removing events which represented "event summaries, rather than particular events: removed `r length(grep(pattern="^summary", x=rawdata$EVTYPE, ignore.case=TRUE, value=TRUE))` records or `r length(unique(grep(pattern="^summary", x=rawdata$EVTYPE, ignore.case=TRUE, value=TRUE)))` events.
+
+3. Removing all event records where no fatalities, injuries, property or crop damage occured: removed `r nrow(rawdata) - nrow(subset(x=rawdata, FATALITIES > 0 | INJURIES > 0 | PROPDMG > 0 | CROPDMG > 0))` records.
+
+4. Converting PROPDMG variable to propertydamage (in USD), multiplying by 1,000 or 1,000,000 where appropriate according to the "K" or "M" values of PROPDMGEXP (other values were set as 0)
 
 ## Section 2: Results TODO
+The NOAA storm database provides information on: (1) the population health impacts as measured by direct fatalities and injuries, and (2) direct or estimated econonomic impacts measured in property damage dollars associated with hydro-meteorological events.
 
-TODO - Identify which events (identified by EVTYPE) are most harmful with respect to population health
+```{r summarize_data}
+library(plyr)
 
+consequences <- ddply(stormdata, c("event"), summarize, 
+                      deaths = sum(FATALITIES, na.rm=TRUE),
+                      injuries = sum(INJURIES, na.rm=TRUE),
+                      property_damage = sum(propertydamage, na.rm=TRUE),
+                      crop_damage = sum(CROPDMG, na.rm=TRUE))
+
+```
+
+### 2.1: Population Health Impacts
+The NOAA database records `r sum(consequences$deaths)` deaths and `r sum(consequences$injuries)` injuries associated with hydro-meteorological events.
+ 
+```{r deaths_analysis}
+# take death statistics
+death_analysis <- consequences[with(consequences, order(-deaths)),]
+# remove other columns
+death_analysis <- death_analysis[,!names(death_analysis) %in% c("injuries","property_damage","crop_damage")]
+# remove 0 values
+death_analysis <- subset(x=death_analysis, deaths > 0)
+# calculate percentage (presentation form)
+death_analysis$deathprop <- 100*death_analysis$deaths/sum(death_analysis$deaths)
+# calculate cumulative sum
+death_analysis <- within(death_analysis, death_sum <- cumsum(deaths))
+# calculate cumulative proportion
+death_analysis <- within(death_analysis, death_prop_sum <- cumsum(deathprop))
+```
+
+```{r injuries_analysis}
+#TODO
+```
+
+### 2.2: 
 TODO - Identify which types of events have the greatest economic consequences
 
 TODO - Figure 1
